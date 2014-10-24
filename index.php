@@ -19,6 +19,7 @@ function my_autoloader($class) {
         'Model\Post' => 'Model/Post.php',
         'Model\CommentTable' => 'Model/CommentTable.php',
     	'Model\Comment' => 'Model/Comment.php',
+        'Db\DbMysqli' => 'Db/DbMysqli.php',
     );
 	
 	require_once $classMap[$class];

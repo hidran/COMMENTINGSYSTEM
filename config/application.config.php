@@ -1,5 +1,5 @@
 <?php 
-/*return  array(
+return  array(
 		'adapter' => 'mysqli',
 		'options' => array(
 				'host' => 'localhost',
@@ -9,7 +9,20 @@
 				,'dsn' => ''
 		)
 );
-*/
+
+return  array(
+    'adapter' => 'mysqli',
+    'options' => array(
+        'driver' => 'mysqli',
+        'host' => 'localhost',
+        'user' => 'root',
+        'password' => '',
+        'db' => 'bloggingsystem',
+        'dsn' => '',
+    		'options' => array(),
+    )
+);
+
 return  array(
     'adapter' => 'pdo',
     'options' => array(
@@ -19,6 +32,6 @@ return  array(
         'password' => '',
         'db' => 'bloggingsystem',
         'dsn' => '',
-    		'options' => array(),
+        'options' => array(),
     )
 );

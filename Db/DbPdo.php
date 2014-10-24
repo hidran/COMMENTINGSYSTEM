@@ -51,7 +51,7 @@ class DbPdo extends PDO implements DbConnection
      * @var string $driver
      */
     protected $driver = 'mysqli';
-
+    public $adapterName = 'pdo';
 function __construct(array $options)
 {
     $this->driver = isset($options['driver']) ? $options['driver'] : 'mysqli';

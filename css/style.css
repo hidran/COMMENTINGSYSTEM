@@ -1,0 +1,26 @@
+
+#content {
+    border: 1px solid red;
+    margin-top: 75px;
+}
+
+#newPost {
+    width: 60%;
+    margin-left: 0;
+}
+
+.published_date {
+    color: #949494;
+    font-size: small;
+}
+
+section {
+    margin-top: 10px;
+}
+.navbar-brand{
+    cursor: default;
+}
+#newPostAnchor{
+    margin-top: 40px;
+}
+

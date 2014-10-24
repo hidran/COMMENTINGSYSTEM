@@ -33,5 +33,3 @@ class Comment
         $this->post_id = isset($data['post_id']) ? $data['post_id'] : '';
     }
 }
-
-?>

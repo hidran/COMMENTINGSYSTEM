@@ -1,7 +1,7 @@
 <?php
 namespace Blog\Db;
 
-use \mysqli
+use \mysqli;
 
 class DbMysqli  extends mysqli implements DbConnection
 {
@@ -47,6 +47,8 @@ class DbMysqli  extends mysqli implements DbConnection
      * @var string $socket 
      */
     protected $socket = 3306;
+    
+    public $adapterName ='mysqli';
 
     function __construct( array $options)
     {
@@ -75,7 +77,19 @@ class DbMysqli  extends mysqli implements DbConnection
             die($e->getMessage());
         }
     }
+    public function execute($statement)
+    {
+        return $this->handler->exec($statement);
+    }
+    public function fetch($statement)
+    {
+        return $this->handler->fetch_array($statement);
+    }
 
+    public function bindValue($statement)
+    {
+        return $this->handler->fetch_array($statement);
+    }
     /**
      *
      * @return the $db

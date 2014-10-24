@@ -9,12 +9,11 @@ if ($this->post) {
     ?>
 
 
-
-    <article id="<?= $post->id ?>">
+    <article id="<?= $this->post->id ?>" xmlns="http://www.w3.org/1999/html">
         <header>
             <div class="row">
                 <div class="col-md-12 text-left">
-                    <h1><a href="?action=showPost&amp&post_id=<?= $post->id ?>"><?= $post->name ?></a></h1>
+                    <h1><a href="?action=showPost&amp&post_id=<?= $this->post->id ?>"><?= $this->post->name ?></a></h1>
                 </div>
             </div>
             <div class="row">
@@ -44,7 +43,8 @@ if ($this->post) {
         <div class="row">
             <div class="col-md-10 col-md-offset-2">
 
-
+                <div class="row" >
+                    <div class="col-md-12" id="comments">
                 <?php
                 if (!$this->isAjax) {
                     echo '<h3>COMMENTS</h3>';
@@ -52,7 +52,7 @@ if ($this->post) {
                 }
                 if (!$this->isAjax && $this->post->comments) {
                     ?>
-                    <section id="comments">
+                  
 
                         <?php
                         foreach ($this->post->comments as $comment) {
@@ -62,10 +62,12 @@ if ($this->post) {
                          
                             } 
                         ?>
-                    </section>
+                   
                 <?php
                 }
                 ?>
+                    </div>
+                </div>
             </div>
         </div>
     </article>

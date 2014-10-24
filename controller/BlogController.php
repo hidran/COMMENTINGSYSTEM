@@ -10,7 +10,7 @@ use Blog\Model\Comment;
 /**
  *
  * @author arias
- *        
+ *
  */
 class BlogController
 {
@@ -48,7 +48,7 @@ class BlogController
     public $timeZone = 'Europe/Paris';
     public $dateFormt = 'd/M/Y H:i';
     private $token;
- 
+
     protected $allowActions = array(
         'index',
         'newPost',
@@ -56,19 +56,20 @@ class BlogController
         'getPosts',
         'getPostComments',
         'savePost',
-    	'saveComment',
-    	'showPost',
-    	'saveComment',
+        'saveComment',
+        'showPost',
+        'saveComment',
     );
-  public $allowedTags = array('<li>','<p>','<br>','<pre>','<code>','<b>');
+    public $allowedTags = array('<li>', '<p>', '<br>', '<pre>', '<code>', '<b>');
+
     /**
      */
     function __construct(array $options = array())
     {
-    	
+
         $this->tpl = 'View/index.tpl.php';
         $this->connection = DbFactory::create($options);
-        
+
         $this->action = 'index';
         $this->headerTitle = 'COMMENTING SYSTEM';
         $this->postTable = new PostTable($this->connection);
@@ -86,10 +87,10 @@ class BlogController
 
     public function process()
     {
-         if (in_array($this->action, $this->allowActions) && method_exists($this, $this->action)) {
+        if (in_array($this->action, $this->allowActions) && method_exists($this, $this->action)) {
             return $this->{$this->action}();
-        } else{
-        	die($this->action.' not allowed');
+        } else {
+            die($this->action . ' not allowed');
         }
         $this->index();
     }
@@ -98,7 +99,7 @@ class BlogController
     {
         $data = array_merge($_GET, $_POST);
         foreach ($data as $key => $val) {
-            
+
             if (property_exists($this, $key)) {
                 $this->{$key} = $val;
             }
@@ -110,10 +111,10 @@ class BlogController
         $this->token = $this->generateToken();
         $_SESSION['token'] = $this->token;
         $this->posts = $this->postTable->fetchAll();
-        $this->content =  require_once 'View/newPost.tpl.php';
+        $this->content = require_once 'View/newPost.tpl.php';
         $this->content .= require_once 'View/posts.tpl.php';
-        $this->tpl =  $this->tpl = 'View/index.tpl.php';
-     }
+        $this->tpl = $this->tpl = 'View/index.tpl.php';
+    }
 
     public function getPosts()
     {
@@ -125,88 +126,97 @@ class BlogController
         $this->postTable->get($this->post_id);
         $this->index();
     }
+
     public function showPost()
     {
-    	$this->token = $this->generateToken();
-    	$_SESSION['token'] = $this->token;
-       $post = $this->postTable->fetch($this->post_id);
-       $this->post = $post;
-       $this->post->comments = array();
-       if($post){
+        $this->token = $this->generateToken();
+        $_SESSION['token'] = $this->token;
+        $post = $this->postTable->fetch($this->post_id);
+        $this->post = $post;
+        $this->headerTitle = $post->name;
+        $this->post->comments = array();
+        if ($post) {
             $this->post->comments = $this->commentTable->getPostComments($this->post_id);
-       }
+        }
         $this->content = require_once 'View/post.tpl.php';
-        $this->tpl =  $this->tpl = 'View/index.tpl.php';
-    	
+        $this->tpl = $this->tpl = 'View/index.tpl.php';
+
     }
+
     public function savePost()
     {
-    if(empty($_POST['token']) ||($_POST['token'] != $_SESSION['token'])){
-    	    die('Invalid token!');
-    	}
-    	 $post = new Post();
-    	 $post->exchangeArray($_POST);
-    	 $post->comments = array();
-        $res = $this->postTable->create($post);
-        if($res){
-        	$message = 'Post successfully created';
-        } else {
-        	$message = 'Error creating posts';
+        if (empty($_POST['token']) || ($_POST['token'] != $_SESSION['token'])) {
+            die('Invalid token!');
         }
-        if($this->isAjax){
-        	$this->post = $post;
-        	$content = $this->content = require_once 'View/post.tpl.php';
-        	echo $content;
-        	
-        }else{
-          header("Location:?message=".urldecode($message));	
+        $post = new Post();
+        $post->exchangeArray($_POST);
+        $post->comments = array();
+        $res = $this->postTable->create($post);
+        if ($res) {
+            $message = 'Post successfully created';
+        } else {
+            $message = 'Error creating posts';
+        }
+        if ($this->isAjax) {
+            $this->post = $post;
+            $content = $this->content = require_once 'View/post.tpl.php';
+            echo $content;
+
+        } else {
+            header("Location:?message=" . urldecode($message));
         }
         exit();
     }
+
     public function saveComment()
     {
-    	if(empty($_POST['token']) ||($_POST['token'] != $_SESSION['token'])){
-    	    die('Invalid token!');
-    	}
+        if (empty($_POST['token']) || ($_POST['token'] != $_SESSION['token'])) {
+            die('Invalid token!');
+        }
         $comment = new Comment();
         $comment->exchangeArray($_POST);
         $res = $this->commentTable->create($comment);
-        if($res){
+        if ($res) {
             $message = 'Comment added';
         } else {
             $this->error = $this->commentTable->getError();
         }
-        if($this->isAjax){
-           ob_start();
+        if ($this->isAjax) {
+            ob_start();
             require_once 'View/comment.tpl.php';
             $output = ob_get_contents();
             ob_end_clean();
             echo $output;
-        }else {
+        } else {
             $url = "?post_id={$this->post_id}&action=showPost&error=" . urldecode($this->error);
             $url .= '&message=' . urldecode($this->message);
             header("Location:$url");
-           
+
         }
         exit;
     }
+
     public function newPost()
     {
-    	$this->token = $this->generateToken();
-    	$_SESSION['token'] = $this->token;
+        $this->token = $this->generateToken();
+        $_SESSION['token'] = $this->token;
         $this->content = require_once 'View/newPost.tpl.php';
-       
-        
+
+
     }
+
     public function getPostComments()
     {
         return $this->commentTable->getComments($this->post_id);
     }
-   public function displayAjax(){
-   	ob_clean();
-   	header("Content-type:text/json");
-   	echo json_decode($this->content);
-   }
+
+    public function displayAjax()
+    {
+        ob_clean();
+        header("Content-type:text/json");
+        echo json_decode($this->content);
+    }
+
     public function display()
     {
         if ($this->isAjax) {
@@ -222,26 +232,29 @@ class BlogController
         $dt = new \DateTime($date, new \DateTimeZone($this->timeZone));
         return $dt->format($this->dateFormt);
     }
-    protected function generateToken(){
-    	return md5(time());
-    }
-   public function filterPostData()
-{
-    $tags = implode('', $this->allowedTags);
-    if (isset($_POST)) {
-        if (isset($_POST['name'])) {
-            $_POST['name'] = strip_tags($_POST['name']);
-        }
-        if (isset($_POST['message'])) {
-            $_POST['message'] = strip_tags($_POST['message'], $tags);
-            $_POST['message'];
-        }
-        if (isset($_POST['name'])) {
-            $_POST['comment'] = strip_tags($_POST['comment'], $tags);
-        }
+
+    protected function generateToken()
+    {
+        return md5(time());
     }
 
-   }
+    public function filterPostData()
+    {
+        $tags = implode('', $this->allowedTags);
+        if (isset($_POST)) {
+            if (isset($_POST['name'])) {
+                $_POST['name'] = strip_tags($_POST['name']);
+            }
+            if (isset($_POST['message'])) {
+                $_POST['message'] = strip_tags($_POST['message'], $tags);
+                $_POST['message'];
+            }
+            if (isset($_POST['name'])) {
+                $_POST['comment'] = strip_tags($_POST['comment'], $tags);
+            }
+        }
+
+    }
 }
 
 ?>
