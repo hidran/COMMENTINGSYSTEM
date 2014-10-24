@@ -199,7 +199,14 @@ function __construct(array $options)
     {
         $this->password = $password;
     }
-
+public function getErrorInfo(){
+	
+	$error = $this->handler->errorInfo();
+	if(isset($error[2])){
+		return $error[2];
+	}
+	return false;
+}
    
 }
 

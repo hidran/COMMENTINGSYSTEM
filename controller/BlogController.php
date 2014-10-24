@@ -34,7 +34,7 @@ class BlogController
 
     public $action;
 
-    public $isAjax = false;
+    public $isAjax = null;
 
     private static $instance = null;
 
@@ -49,26 +49,41 @@ class BlogController
     public $dateFormt = 'd/M/Y H:i';
     private $token;
 
-    protected $allowActions = array(
-        'index',
-        'newPost',
-        'getPost',
-        'getPosts',
-        'getPostComments',
-        'savePost',
-        'saveComment',
-        'showPost',
-        'saveComment',
-    );
-    public $allowedTags = array('<li>', '<p>', '<br>', '<pre>', '<code>', '<b>');
+    protected $allowedActions = array();
+    protected $antiSpamQuestions = array();
+    protected $question;
+    public $answer;
+    
+    public $allowedTags = array();
+    protected $applicationConfig = array();
+    public $hideForm = 1;
+    public $showComments = 0;
 
     /**
      */
     function __construct(array $options = array())
     {
-
-        $this->tpl = 'View/index.tpl.php';
-        $this->connection = DbFactory::create($options);
+    	if(!empty($options['allowedTags'])){
+    		$this->allowedTags = $options['allowedTags'];
+    	}
+       	if(!empty($options['antiSpamQuestions'])){
+    		$this->antiSpamQuestions = $options['antiSpamQuestions'];
+    	}
+    	//var_dump($this->antiSpamQuestions);
+    	if(!empty($options['allowedActions'])){
+    		$this->allowedActions = $options['allowedActions'];
+    	} else {
+    		throw new \InvalidArgumentException('No actions defined!');
+    	}
+    //	var_dump($options['db']);
+    	 
+       	if(empty($options['db'])){
+    	
+    		throw new \InvalidArgumentException('No db connection defined!');
+    	}
+    	 
+    	$this->tpl = 'View/index.tpl.php';
+        $this->connection = DbFactory::create($options['db']);
 
         $this->action = 'index';
         $this->headerTitle = 'COMMENTING SYSTEM';
@@ -87,7 +102,7 @@ class BlogController
 
     public function process()
     {
-        if (in_array($this->action, $this->allowActions) && method_exists($this, $this->action)) {
+        if (in_array($this->action, $this->allowedActions) && method_exists($this, $this->action)) {
             return $this->{$this->action}();
         } else {
             die($this->action . ' not allowed');
@@ -110,6 +125,9 @@ class BlogController
     {
         $this->token = $this->generateToken();
         $_SESSION['token'] = $this->token;
+       
+         $this->generateRamdomQuestion();
+        
         $this->posts = $this->postTable->fetchAll();
         $this->content = require_once 'View/newPost.tpl.php';
         $this->content .= require_once 'View/posts.tpl.php';
@@ -131,6 +149,7 @@ class BlogController
     {
         $this->token = $this->generateToken();
         $_SESSION['token'] = $this->token;
+        $this->generateRamdomQuestion();
         $post = $this->postTable->fetch($this->post_id);
         $this->post = $post;
         $this->headerTitle = $post->name;
@@ -146,12 +165,17 @@ class BlogController
     public function savePost()
     {
         if (empty($_POST['token']) || ($_POST['token'] != $_SESSION['token'])) {
-            die('Invalid token!');
+            die('<p class="bg-danger">Invalid token!</p>');
+        }
+        if (empty($_POST['answer']) || ($_POST['answer'] != $_SESSION['currentQuestion']['answer'])) {
+        	die('<p class="bg-danger">Wrong answer!</p>');
         }
         $post = new Post();
         $post->exchangeArray($_POST);
         $post->comments = array();
+       // var_dump($post);
         $res = $this->postTable->create($post);
+     //   var_dump($post);
         if ($res) {
             $message = 'Post successfully created';
         } else {
@@ -159,9 +183,8 @@ class BlogController
         }
         if ($this->isAjax) {
             $this->post = $post;
-            $content = $this->content = require_once 'View/post.tpl.php';
-            echo $content;
-
+             echo  require_once 'View/post.tpl.php';
+         
         } else {
             header("Location:?message=" . urldecode($message));
         }
@@ -171,8 +194,12 @@ class BlogController
     public function saveComment()
     {
         if (empty($_POST['token']) || ($_POST['token'] != $_SESSION['token'])) {
-            die('Invalid token!');
+            die('<p class="bg-danger">Invalid token!</p>');
         }
+        if (empty($_POST['answer']) || ($_POST['answer'] != $_SESSION['currentQuestion']['answer'])) {
+        	die('<p class="bg-danger">Wrong answer!</p>');
+        }
+        
         $comment = new Comment();
         $comment->exchangeArray($_POST);
         $res = $this->commentTable->create($comment);
@@ -200,7 +227,9 @@ class BlogController
     {
         $this->token = $this->generateToken();
         $_SESSION['token'] = $this->token;
+         $this->generateRamdomQuestion();
         $this->content = require_once 'View/newPost.tpl.php';
+        $this->content = str_replace('style="display: none"','', $this->content);
 
 
     }
@@ -212,15 +241,14 @@ class BlogController
 
     public function displayAjax()
     {
-        ob_clean();
-        header("Content-type:text/json");
-        echo json_decode($this->content);
+      echo  $this->content;
     }
 
     public function display()
     {
         if ($this->isAjax) {
             $this->displayAjax();
+            exit;
         }
         if ($this->tpl) {
             require_once $this->tpl;
@@ -255,6 +283,12 @@ class BlogController
         }
 
     }
+   protected function generateRamdomQuestion(){
+   	$id = mt_rand(0,count($this->antiSpamQuestions)-1);
+   	$this->question = $this->antiSpamQuestions[$id];
+   	$_SESSION['currentQuestion'] = $this->question;
+   	
+   }
 }
 
 ?>

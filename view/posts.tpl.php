@@ -15,7 +15,7 @@ if ($this->posts) {  ?>
 		<header>
 		<div class="row">
 			<div class="col-md-12 text-left">
-			    <h1><a href="?action=showPost&amp&post_id=<?=$post->id?>"><?= $post->name?></a></h1>
+			    <h1><a onclick="return(getNewPost(1,'showPost',<?=$post->id?>,1))" href="?showComments=1&amp;action=showPost&amp&post_id=<?=$post->id?>"><?= $post->name?></a></h1>
 			</div>
 		</div>
 		<div class="row">

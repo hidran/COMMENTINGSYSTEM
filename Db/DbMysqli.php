@@ -186,6 +186,12 @@ class DbMysqli  extends mysqli implements DbConnection
     {
         $this->port = $port;
     }
+    public function lastinsertid(){
+    	return $this->handler->insert_id;
+    }
+    public function getErrorInfo(){
+    	return $this->handler->error;
+    }
 }
 
 ?>

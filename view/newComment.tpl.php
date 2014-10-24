@@ -16,8 +16,26 @@ ob_start();
 	<div class="form-group">
 		<label for="message" class="col-md-2 control-label">Message</label>
 		<div class="col-md-10">
-			<textarea class="form-control" required id="comment"  name="comment" rows="4"
+			<textarea class="form-control" required id="comment"  name="comment" rows="2"
 				class="field col-md-12"></textarea>
+		</div>
+	</div>
+		<div class="form-group">
+		<label for="message" class="col-md-2 control-label">Prove you are
+			human</label>
+		<div class="col-md-10">
+			<div class="row">
+				<div class="col-md-6">
+					<input class="form-control" disabled type="text"
+						value="<?=$this->question['question']?>" size="16">
+				</div>
+				<div class="col-md-6">
+					<input class="form-control" type="text" required maxlength="2"
+						class="form-control" size="2" id="answer" name="answer"
+						placeholder="Insert result">
+
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="form-group">

@@ -4,8 +4,9 @@ ob_start();
  * @var Blog\Model\Post $post
  */
 if ($this->post) {
-    $newComment = require_once 'View/newComment.tpl.php';
-  
+   if($this->showComments){
+	$newComment = require_once 'View/newComment.tpl.php';
+   }
     ?>
 
 
@@ -13,7 +14,13 @@ if ($this->post) {
         <header>
             <div class="row">
                 <div class="col-md-12 text-left">
-                    <h1><a href="?action=showPost&amp&post_id=<?= $this->post->id ?>"><?= $this->post->name ?></a></h1>
+                <?php 
+                if($this->showComments){ ?>
+                              <h1> <?= $this->post->name ?></h1>
+ 
+                <?php } else { ?>
+                    <h1><a onclick="return(getNewPost(1,'showPost',<?=$this->post->id?>,1))" href="?action=showPost&amp&post_id=<?= $this->post->id ?>"><?= $this->post->name ?></a></h1>
+                <?php } ?>
                 </div>
             </div>
             <div class="row">
@@ -46,16 +53,16 @@ if ($this->post) {
                 <div class="row" >
                     <div class="col-md-12" id="comments">
                 <?php
-                if (!$this->isAjax) {
+                if ($this->showComments) {
                     echo '<h3>COMMENTS</h3>';
                     echo  $newComment ;
                 }
-                if (!$this->isAjax && $this->post->comments) {
+                if ($this->showComments && $this->post->comments) {
                     ?>
                   
 
                         <?php
-                        foreach ($this->post->comments as $comment) {
+                        foreach ($this->showComments && $this->post->comments as $comment) {
                               
                             echo '<hr>';
                             require 'View/comment.tpl.php';

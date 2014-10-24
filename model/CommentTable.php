@@ -87,7 +87,10 @@ echo $query;
 
     public function isValid(Comment $comment)
     {
-        return $comment->comment && $comment->email;
+        $res= $comment->comment && $comment->email;
+        $regex = "/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/";
+        $res = $res && preg_match($regex, $comment->email);
+        
     }
 
 }
