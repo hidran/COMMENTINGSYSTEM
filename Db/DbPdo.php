@@ -39,6 +39,11 @@ class DbPdo extends PDO implements DbConnection
 
     /**
      *
+     * @var handler $dsn
+     */
+    protected $dsn;
+    /**
+     *
      * @var array $options PDO options
      */
     protected $options =  array(
@@ -56,12 +61,12 @@ function __construct(array $options)
 {
     $this->driver = isset($options['driver']) ? $options['driver'] : 'mysqli';
     
-    $this->dsn = isset($options['dsn']) ? $options['dsn'] : '';
-    $this->host = isset($options['host']) ? $options['host'] : '';
-    $this->user = isset($options['user']) ? $options['user'] : '';
-    $this->db = isset($options['db']) ? $options['db'] : '';
+    $this->dsn = !empty($options['dsn']) ? $options['dsn'] : '';
+    $this->host = !empty($options['host']) ? $options['host'] : '';
+    $this->user = !empty($options['user']) ? $options['user'] : '';
+    $this->db = !empty($options['db']) ? $options['db'] : '';
     
-    $this->password = isset($options['password']) ? $options['password'] : '';
+    $this->password = !empty($options['password']) ? $options['password'] : '';
      if( isset($options['options']) && is_array($options['options'])){
          $this->options = $options['options'] ;
      }
@@ -85,7 +90,7 @@ function __construct(array $options)
     	}
     	
         try {
-            $this->handler = new PDO($this->dsn, $this->user, $this->password, $this->options);
+             $this->handler = new PDO($this->dsn, $this->user, $this->password, $this->options);
             return $this->handler;
           } catch (PDOException $e) {
             die($e->getMessage());

@@ -3,13 +3,11 @@ $config = array ();
 $config ['db'] = array (
 		'adapter' => 'pdo', // it could be mysqli
 		'options' => array (
-				'driver' => 'mysql', // any pdo supported driver: sqllite, mysql,
-				                     // oci
+				'driver' => 'mysql', // any pdo supported driver: sqllite, mysql, oci
 				'host' => 'localhost',
 				'user' => 'root',
 				'password' => '',
 				'db' => 'bloggingsystem',
-				'dsn' => '',
 				'options' => array () 
 		) 
 );
@@ -50,6 +48,15 @@ $config ['antiSpamQuestions'] = array (
 		array (
 				'question' => '12-6',
 				'answer' => 6
-		)
+		),
+		array (
+				'question' => '5+6',
+				'answer' => 11
+		),
+ 
+    array (
+        'question' => '9-2',
+        'answer' => 7
+    )
 );
 return $config;

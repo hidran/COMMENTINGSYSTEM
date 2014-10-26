@@ -108,7 +108,7 @@ class PostTable
     public function isValid(Post $post)
     {
         $res = $post->name && $post->email && $post->message;
-        $regex = "/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/";
+        $regex = '/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/';
         $preg = preg_match($regex, $post->email);
        
         $res = $res && $preg;

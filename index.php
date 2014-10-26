@@ -4,7 +4,6 @@ session_regenerate_id();
 
 function my_autoloader($class) {
 	$class = str_replace('Blog\\', '', $class);
-    // echo $class."<br>";
     /**
      * Class map array for autoloading classes
      */
