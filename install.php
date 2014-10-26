@@ -17,8 +17,7 @@ try {
         if (! $selDb) {
             $data = file_get_contents('data/bloggingsystem.sql');
             $script = explode(';', $data);
-            // var_dump($script);die;
-            foreach ($script as $command) {
+             foreach ($script as $command) {
                 $multiRes = $res->query($command);
                 if (! $multiRes) {
                     throw new Exception($res->error);
@@ -28,6 +27,7 @@ try {
             
             if ($multiRes) {
                 header("Location:index.php");
+                exit;
             } else {
                 throw new Exception($res->error);
             }
