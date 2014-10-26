@@ -69,13 +69,14 @@ class PostTable
    	$query .= " where name='$name' and created='$dateCreated' and email='$email' LIMIT 1";
    //	echo $query;
    	$res = $this->conn->query($query);
-   	
+   	$id = '';
    	if ($res) {
    		foreach ($res as $data);
    		
    		
-   		return $data['id'];
+   		$id= $data['id'];
        }
+       return $id;
    }
     public function create(Post $post)
     {
