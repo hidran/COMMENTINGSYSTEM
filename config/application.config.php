@@ -1,7 +1,7 @@
 <?php
 $config = array ();
 $config ['db'] = array (
-		'adapter' => 'pdo', // it could be mysqli
+		'adapter' => 'mysqli', // it could be mysqli
 		'options' => array (
 				'driver' => 'mysql', // any pdo supported driver: sqllite, mysql, oci
 				'host' => 'localhost',
